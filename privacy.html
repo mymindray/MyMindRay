@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="description" content="How My MindRay treats your data." />
+  <meta name="theme-color" content="#080808" />
+  <meta name="robots" content="index,follow" />
+  <title>Privacy Policy — My MindRay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="dashboard.css" />
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="quiet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+</head>
+<body class="font-inter antialiased">
+  <div class="page-bg"></div>
+  <header class="mobile-topbar">
+    <button class="icon-btn" id="openMenu" aria-label="Open menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+    </button>
+    <a class="brand-lockup" href="index.html" aria-label="My MindRay">
+      <span class="wordmark">My MindRay</span>
+    </a>
+    <div class="flex items-center gap-2">
+      <a class="icon-btn" href="notifications.html" aria-label="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </a>
+      <a href="profile.html"><img class="avatar-sm" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Amanda&backgroundColor=c0aede" alt="Amanda" /></a>
+      <a class="ai-orb" href="ai.html" aria-label="AI desk" title="AI desk"><span class="atom"><span class="nucleus"></span><span class="ring ring1"></span><span class="ring ring2"></span><span class="ring ring3"></span></span></a>
+    </div>
+  </header>
+  <div class="app">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="overlay" id="overlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+      <span class="wordmark wordmark-mono" aria-label="My MindRay">M</span>
+    </div>
+      <nav class="sidebar-nav" aria-label="Main">
+        <a class="nav-orb active" href="dashboard.html" data-label="Dashboard" title="Dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.6" fill="currentColor"/><rect x="14" y="3" width="7" height="7" rx="1.6" fill="currentColor"/><rect x="3" y="14" width="7" height="7" rx="1.6" fill="currentColor"/><rect x="14" y="14" width="7" height="7" rx="1.6" fill="currentColor"/></svg>
+        </a>
+        <a class="nav-orb " href="calendar.html" data-label="Calendar" title="Calendar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </a>
+        <a class="nav-orb " href="messages.html" data-label="Messages" title="Messages">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </a>
+        <a class="nav-orb " href="care.html" data-label="Care tools" title="Care tools">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .8-4.5 2.2C10.5 3.8 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5C2 10.8 3.5 12.6 5 14l7 7 7-7z"/></svg>
+        </a>
+        <a class="nav-orb " href="library.html" data-label="Library" title="Library">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </a>
+
+        <a class="nav-orb" href="leaderboard.html" data-label="Leaderboard" title="Leaderboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg>
+        </a>
+
+
+        <a class="nav-orb" href="relax.html" data-label="Relax" title="Relax">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </a>
+        <a class="nav-orb" href="journal.html" data-label="Journal" title="Journal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+        </a>
+        <a class="nav-orb" href="doctors.html" data-label="Doctors" title="Doctors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M6 21V8l6-4 6 4v13"/><path d="M10 21v-6h4v6"/></svg>
+        </a>
+
+              <a class="nav-orb" href="settings.html" data-label="Settings" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.7 1 1.2 1.8 1.2H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </a>
+</nav>
+      <div class="sidebar-foot desktop-only">
+        <a class="nav-orb" href="help.html" title="Help">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </a>
+        <a class="nav-orb" href="report.html" title="Report">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        </a>
+      </div>
+    </aside>
+    <div class="app-body">
+      <main class="shell">
+        <header class="desk-header">
+          <h1 class="greeting"> Privacy Policy</h1>
+          <div class="header-right">
+            <a class="ai-check-btn" href="dashboard.html">Back to dashboard</a>
+            <div class="user-pill">
+              <a class="pill-icon" href="notifications.html" aria-label="Notifications">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </a>
+              <a class="pill-icon" href="settings.html" aria-label="Settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l-.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1-.1a1.7 1.7 0 0 0-.3 1.8V9c.3.7 1 1.2 1.8 1.2H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+              </a>
+              <a href="profile.html"><img class="avatar-sm" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Amanda&backgroundColor=c0aede" alt="Amanda" /></a>
+            </div>
+          </div>
+        </header>
+        
+  <section class="page-grid">
+    <article class="card info-block">
+      <h2>1. Who we are</h2>
+      <p>My MindRay is a wellness dashboard designed for students. It is not a hospital, clinic, insurer or registered healthcare provider, and this policy explains — in plain language — what the site does with your information while you use it.</p>
+      <h2>2. Information we collect</h2>
+      <p><strong>Account information.</strong> When you create an account we collect the email address and password you provide, or, if you continue with Google, the name, email address and profile picture Google shares with us. Your password is never stored in plain text — authentication is handled by Supabase, our backend provider, using industry-standard hashing.</p>
+      <p><strong>Profile details you choose to add.</strong> A display username, an avatar style, and — only if you type them in — your phone number and an emergency/family contact number used for the optional WhatsApp care-nudge feature.</p>
+      <p><strong>Wellness activity.</strong> Daily check-ins (mood, sleep, energy, and any note you write), WHO-5 well-being scores calculated from those check-ins, wellness and check-in streaks, journal entries, Relax practice completions, educational sources you mark as done, and consultations you schedule with doctors listed in the app.</p>
+      <p><strong>Device and usage data.</strong> Basic technical information such as browser type and screen size, used only to make the layout responsive — we do not run third-party trackers or ad analytics.</p>
+      <h2>3. Where this information lives</h2>
+      <p>Your account (email/password or Google identity) is stored securely with Supabase, our authentication provider. At this stage of the project, most of your day-to-day activity — check-ins, journal entries, streaks, and doctor selections — is saved locally in your browser's storage on the device you are using, so it is available whenever you return on that same browser, but does not yet automatically follow you to a different phone or computer. We are actively working on syncing this data to your account so it is available on any device you log in from; this policy will be updated when that change ships.</p>
+      <h2>4. How we use your information</h2>
+      <p>We use your information only to run the app for you: to sign you in, remember your streaks and progress, personalise the dashboard and AI desk, show relevant doctors and consultation times, and send you the notifications you have opted into. We do not sell your information, and we do not use it to train advertising profiles.</p>
+      <h2>5. Who we share it with</h2>
+      <p>We use a small number of service providers to run the app: Supabase (authentication and, where enabled, data storage), Google (if you choose "Continue with Google"), Google Fonts (to load typefaces), and DiceBear (a public avatar-image generator — the pictures are illustrations, not your real photo). None of these providers is permitted to use your data for their own marketing. We do not share your wellness data with your school, employer, or any third party for marketing purposes.</p>
+      <h2>6. Cookies and local storage</h2>
+      <p>My MindRay uses your browser's local storage (not third-party ad cookies) to remember your check-ins, progress, and preferences between visits, and a short-lived session cookie/token from Supabase to keep you signed in. You can clear this at any time through your browser settings; doing so will reset the dashboard on that device.</p>
+      <h2>7. How long we keep information</h2>
+      <p>Account information is kept for as long as your account exists. You can delete your account at any time from Settings → Account, which removes your login credentials; locally stored activity data can be cleared from your browser at any time and is also cleared automatically if you clear site data.</p>
+      <h2>8. Your choices and rights</h2>
+      <p>You can review and edit your profile at any time on the Profile page, export or delete individual journal entries, clear your check-in history, and delete your account entirely. If you would like help exercising any of these choices, or have a question about a specific piece of data, use the <a href="contact.html">Contact</a> page.</p>
+      <h2>9. Sensitive wellness information</h2>
+      <p>Mood, sleep and journal entries are personal and sensitive. Please treat My MindRay as a self-reflection and awareness tool rather than a clinical medical record — do not enter information here that you would only share with a licensed doctor in a confidential medical file, and always follow up sensitive concerns with an actual doctor, counsellor, or trusted adult.</p>
+      <h2>10. Children and students</h2>
+      <p>My MindRay is built with students in mind. If you are a minor, we encourage you to use the site together with a parent, guardian or trusted adult, especially when adding an emergency contact number or scheduling a consultation with a doctor.</p>
+      <h2>11. Not an emergency service</h2>
+      <p>My MindRay cannot see or respond to your messages in real time and is not a substitute for emergency care. If you or someone you know is in immediate danger, call your local emergency number right away. In India, that is <strong>112</strong>. You can also reach the government KIRAN mental health helpline at <strong>1800-599-0019</strong> (toll-free, 24/7) or iCall at <strong>9152987821</strong>.</p>
+      <h2>12. Security</h2>
+      <p>We rely on Supabase's security practices (encrypted connections, hashed passwords, access-controlled databases) to protect your account. No method of storage or transmission is 100% secure, so we cannot guarantee absolute security, but we take reasonable, industry-standard steps to protect your information.</p>
+      <h2>13. Changes to this policy</h2>
+      <p>We may update this policy as the project grows — for example, when we move activity data from local storage to full account sync. We will update the date below and, for significant changes, note them on this page.</p>
+      <h2>14. Contact us</h2>
+      <p>Questions about this policy or your data can be sent through our <a href="contact.html">Contact page</a> or by emailing <a href="mailto:wellledger@gmail.com">wellledger@gmail.com</a>.</p>
+      <p class="stat-copy" style="margin-top:14px;">Last updated: September 2026.</p>
+    </article>
+  </section>
+  
+      </main>
+      <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div>
+          <span class="wordmark footer-wordmark">My MindRay</span>
+          <p>Support that stays with you when the day gets loud.</p>
+        </div>
+      </div>
+      <div class="footer-nav-row">
+        <nav class="foot-col" aria-label="Product">
+          <strong>Product</strong>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="ai.html">AI desk</a>
+          <a href="relax.html">Relax</a>
+          <a href="journal.html">Journal</a>
+        </nav>
+        <nav class="foot-col" aria-label="Help">
+          <strong>Help</strong>
+          <a href="help.html">Help & FAQ</a>
+          <a href="contact.html">Contact</a>
+          <a href="report.html">Report an issue</a>
+          <a href="about.html">About</a>
+        </nav>
+        <nav class="foot-col" aria-label="Legal">
+          <strong>Legal</strong>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="copyright.html">Copyright Policy</a>
+        </nav>
+      </div>
+      <div class="footer-social" aria-label="Follow My MindRay">
+        <a class="social-ico" href="https://wa.me/" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </a>
+        <a class="social-ico" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+        <a class="social-ico" href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h-2a5 5 0 0 0-5 5v2H6v4h2v7h4v-7h3l1-4h-4V8a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a class="social-ico" href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l16 16M20 4L4 20"/></svg>
+        </a>
+        <a class="social-ico" href="mailto:wellledger@gmail.com" aria-label="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        </a>
+      </div>
+      <div class="footer-base">
+        <p class="footer-note">Made with love to protect your precious life.</p>
+        <p class="footer-status">All systems quiet</p>
+      </div>
+    </div>
+  </footer>
+    </div>
+  </div>
+  <div class="modal" id="modal" hidden>
+    <div class="modal-card">
+      <button class="modal-x" id="closeModal" aria-label="Close">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

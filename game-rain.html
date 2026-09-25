@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rain Room</title>
+<style>
+  html,body{height:100%;margin:0;background:#0B1220;color:#E9EDF6;font-family:Inter,system-ui,sans-serif;overflow:hidden}
+  canvas{position:fixed;inset:0;width:100%;height:100%}
+  .q{position:fixed;top:8vh;left:0;right:0;text-align:center;font-style:italic;pointer-events:none}
+  .panel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:min(420px,92vw);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:12px 16px}
+  input{width:100%}
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<p class="q">Let the rain wash away your stress.</p>
+<div class="panel"><label>Rain <input id="intensity" type="range" min="0" max="100" value="55"></label></div>
+<script>
+const c=document.getElementById('rain'),x=c.getContext('2d');
+let W,H,drops=[];
+function resize(){W=innerWidth;H=innerHeight;c.width=W;c.height=H;}
+addEventListener('resize',resize);resize();
+function init(){const n=40+intensity.value*3.8;drops=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,len:14+Math.random()*22,speed:4+Math.random()*4,op:.12+Math.random()*.33,d:.5+Math.random()*.5}));}
+const intensity=document.getElementById('intensity'); intensity.oninput=init; init();
+function tick(){x.clearRect(0,0,W,H);const mul=.6+intensity.value/100*1.3;x.lineWidth=1.3;
+for(const d of drops){x.strokeStyle=`rgba(182,199,230,${d.op})`;x.beginPath();x.moveTo(d.x,d.y);x.lineTo(d.x+d.d*6,d.y+d.len);x.stroke();d.x+=d.d*mul;d.y+=d.speed*mul;if(d.y>H+20){d.y=-20;d.x=Math.random()*W;}}
+requestAnimationFrame(tick);} tick();
+</script>
+</body>
+</html>

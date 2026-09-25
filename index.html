@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Private mental wellness check-ins, mood tracking, and calm tools." />
+  <meta name="theme-color" content="#080808" />
+  <meta name="robots" content="index,follow" />
+  <title>My MindRay — Quiet care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
+</head>
+<body class="home-page">
+  <header class="top">
+    <a class="brand" href="index.html">
+      <span class="wordmark">My MindRay</span>
+    </a>
+    <nav>
+      <a class="nav-chip" id="navDash" href="login.html">Dashboard</a>
+      <a class="nav-solid" id="getStartedNav" href="login.html">Get started</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="heroLock">
+    <div class="hero-copy">
+      <p class="eyebrow">My MindRay · quiet care</p>
+      <h1>A calmer desk<br>for <em>your mind.</em></h1>
+      <p class="welcome" id="welcome" hidden>
+        <span class="welcome-kicker">Welcome,</span>
+        <span class="welcome-name"></span>
+      </p>
+      <p class="lede">Mood, sessions, exercises, and notes in one still place. Support that stays with you — not a hospital, not a replacement for a counsellor.</p>
+      <div class="hero-actions">
+        <a class="btn-main" id="getStarted" href="login.html">Get started</a>
+        <a class="btn-ghost" href="demodashboard.html" id="demoBtn" hidden>Watch the demo</a>
+      </div>
+      <p class="micro">Scroll to open the rest of the page</p>
+    </div>
+    <aside class="atmosphere" aria-hidden="true">
+      <span class="atm-label">Atmosphere</span>
+      <span class="atm-meta">01 / 01</span>
+      <div class="medallion"></div>
+      <p>Quiet field</p>
+      <span>No stock photos · value, not noise</span>
+    </aside>
+  </section>
+
+  <main class="home" id="homeRest">
+    <header class="section-head">
+      <h2>A small vocabulary<br><em>that says a lot.</em></h2>
+      <p>Three surfaces, one accent, one shape language. The product stays dense. The marketing page stays still.</p>
+    </header>
+    <div class="vocab">
+      <article class="text-card">
+        <h3>What My MindRay is</h3>
+        <p>My MindRay keeps mood check-ins, wellness goals, sessions, exercises, and upcoming visits in one calm place. It is a support tool, not a hospital and not a replacement for a counsellor.</p>
+      </article>
+      <article class="text-card">
+        <h3>Why choose it</h3>
+        <p>Your account stores only your own progress. The AI desk can save a mood to your graph. Try the demo to look around, or sign in so your dashboard follows you on any device.</p>
+      </article>
+    </div>
+
+    <article class="urgent-card">
+      <div class="urgent-copy">
+        <h3>Urgent Support</h3>
+        <p>Quick access to crisis hotlines when you need immediate help</p>
+      </div>
+      <div class="lotus" aria-hidden="true">
+        <svg viewBox="0 0 200 160" class="lotus-svg">
+          <defs>
+            <linearGradient id="petalA" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fff6c8"/>
+              <stop offset="55%" stop-color="#f4c96a"/>
+              <stop offset="100%" stop-color="#e8a03a"/>
+            </linearGradient>
+            <linearGradient id="petalB" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fff"/>
+              <stop offset="40%" stop-color="#f7d7ea"/>
+              <stop offset="100%" stop-color="#e7a0c8"/>
+            </linearGradient>
+            <radialGradient id="glow" cx="50%" cy="55%" r="50%">
+              <stop offset="0%" stop-color="#fff8d0" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="100" cy="95" r="46" fill="url(#glow)"/>
+          <ellipse cx="100" cy="118" rx="18" ry="28" fill="url(#petalA)" transform="rotate(-18 100 118)"/>
+          <ellipse cx="100" cy="118" rx="18" ry="28" fill="url(#petalA)" transform="rotate(18 100 118)"/>
+          <ellipse cx="100" cy="112" rx="20" ry="34" fill="url(#petalB)" transform="rotate(-38 100 112)"/>
+          <ellipse cx="100" cy="112" rx="20" ry="34" fill="url(#petalB)" transform="rotate(38 100 112)"/>
+          <ellipse cx="100" cy="108" rx="16" ry="36" fill="url(#petalA)"/>
+          <ellipse cx="78" cy="96" rx="16" ry="30" fill="url(#petalB)" transform="rotate(-55 78 96)"/>
+          <ellipse cx="122" cy="96" rx="16" ry="30" fill="url(#petalB)" transform="rotate(55 122 96)"/>
+          <ellipse cx="100" cy="88" rx="14" ry="26" fill="#fff3b0"/>
+          <circle cx="100" cy="102" r="7" fill="#ffe27a"/>
+        </svg>
+      </div>
+      <button type="button" class="help-now" id="helpNow">Get help now</button>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div>
+          <span class="wordmark footer-wordmark">My MindRay</span>
+          <p>Support that stays with you when the day gets loud.</p>
+        </div>
+      </div>
+      <div class="footer-nav-row">
+        <nav class="foot-col" aria-label="Product">
+          <strong>Product</strong>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="ai.html">AI desk</a>
+          <a href="relax.html">Relax</a>
+          <a href="journal.html">Journal</a>
+        </nav>
+        <nav class="foot-col" aria-label="Help">
+          <strong>Help</strong>
+          <a href="help.html">Help & FAQ</a>
+          <a href="contact.html">Contact</a>
+          <a href="report.html">Report an issue</a>
+          <a href="about.html">About</a>
+        </nav>
+        <nav class="foot-col" aria-label="Legal">
+          <strong>Legal</strong>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="copyright.html">Copyright Policy</a>
+        </nav>
+      </div>
+      <div class="footer-social" aria-label="Follow My MindRay">
+        <a class="social-ico" href="https://wa.me/" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </a>
+        <a class="social-ico" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+        <a class="social-ico" href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h-2a5 5 0 0 0-5 5v2H6v4h2v7h4v-7h3l1-4h-4V8a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a class="social-ico" href="https://x.com/" target="_blank" rel="noopener" aria-label="X (Twitter)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l16 16M20 4L4 20"/></svg>
+        </a>
+        <a class="social-ico" href="mailto:wellledger@gmail.com" aria-label="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        </a>
+      </div>
+      <div class="footer-base">
+        <p class="footer-note">Made with love to protect your precious life.</p>
+        <p class="footer-status">All systems quiet</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="sheet" id="userSheet" hidden>
+    <form class="sheet-card" id="userForm">
+      <h3>Set up your profile</h3>
+      <p>Your username is how we greet you — it must be unused. The phone numbers help you, or someone close to you, get reached if it's ever needed. Use a different number in each field.</p>
+      <input id="usernameInput" maxlength="20" autocomplete="username" placeholder="Username" />
+      <input id="personalPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Your phone number" />
+      <input id="familyPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Family member's phone number" />
+      <input id="friendPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Friend's or warden's phone number (optional)" />
+      <p class="err field-err" id="phoneClashErr"></p>
+      <p class="err" id="userErr"></p>
+      <button type="submit" class="btn-main">Save & continue</button>
+    </form>
+  </div>
+
+  <div class="modal" id="urgentModal" hidden>
+    <div class="modal-card">
+      <button class="modal-x" id="closeUrgentModal" aria-label="Close">×</button>
+      <h2>Urgent support</h2>
+      <p>If you or someone near you is in immediate danger, contact local emergency services first.</p>
+      <div class="hotline"><span>India — KIRAN mental health</span><a href="tel:18005990019">1800-599-0019</a></div>
+      <div class="hotline"><span>iCall (TISS)</span><a href="tel:9152987821">9152987821</a></div>
+      <p>My MindRay does not provide emergency care.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      const modal = document.getElementById("urgentModal");
+      const openBtn = document.getElementById("helpNow");
+      const closeBtn = document.getElementById("closeUrgentModal");
+      if (!modal) return;
+      openBtn?.addEventListener("click", () => { modal.hidden = false; });
+      closeBtn?.addEventListener("click", () => { modal.hidden = true; });
+      modal.addEventListener("click", (e) => { if (e.target === modal) modal.hidden = true; });
+      window.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) modal.hidden = true; });
+    })();
+  </script>
+</body>
+</html>

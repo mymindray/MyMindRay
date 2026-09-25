@@ -1,0 +1,70 @@
+/* ============================================================
+   My MindRay — Login / Sign up (login.css)
+   One dark theme, matching the rest of the site.
+   ============================================================ */
+
+:root {
+  --bg: #080808;
+  --surface: #101013;
+  --surface-2: #16161b;
+  --line: #232328;
+  --ink: #ece8df;
+  --mute: #9b968d;
+  --accent: #e8e5dc;
+  --blue-deep: #B8501B;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+body { min-height: 100dvh; display: flex; flex-direction: column; font-family: Manrope, system-ui, sans-serif; }
+a, button, input, img { outline: none; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--blue-deep); outline-offset: 2px; }
+
+.top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+  padding: 14px 22px;
+  background: rgba(8,8,8,.78);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+}
+.brand { display: flex; align-items: center; gap: 8px; text-decoration: none; width: max-content; }
+.wordmark { font-family: "Instrument Serif", Fraunces, Georgia, serif; font-style: italic; font-weight: 400; font-size: 30px; line-height: 1; letter-spacing: .005em; color: var(--ink, #f4f1ea); white-space: nowrap; }
+
+.stage { flex: 1; display: grid; place-items: center; padding: 96px 16px 28px; }
+.card {
+  width: min(420px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px; padding: 26px;
+  animation: up .4s ease;
+  transition: border-color .3s ease;
+}
+@keyframes up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+h1 { font-family: "Instrument Serif", Fraunces, serif; font-weight: 400; margin: 0 0 6px; font-size: 30px; color: var(--ink); }
+.lead, .hint { color: var(--mute); font-size: 13px; line-height: 1.5; }
+label { display: block; font-size: 13px; font-weight: 650; margin-top: 10px; color: var(--ink); }
+input {
+  width: 100%; margin-top: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 12px;
+  font: inherit; background: var(--surface-2); color: var(--ink);
+  appearance: none; -webkit-appearance: none;
+  transition: border-color .2s ease, background .2s ease;
+}
+input:focus { border-color: var(--blue-deep); }
+input::placeholder { color: #6b6a64; }
+
+.google, .go, .switch {
+  width: 100%; border-radius: 999px; padding: 11px 16px; font-weight: 700; cursor: pointer; font: inherit;
+  transition: transform .3s ease, background .3s ease, filter .3s ease;
+}
+.google { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); margin: 16px 0 8px; }
+.google:hover { transform: translateY(-2px); background: rgba(255,255,255,.08); }
+.or { text-align: center; color: var(--mute); font-size: 12px; margin: 8px 0; }
+.go { border: 0; background: var(--accent); color: #111; margin-top: 8px; }
+.go:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.go:disabled { background: var(--surface-2); color: var(--mute); cursor: not-allowed; transform: none; }
+.switch-line { margin: 16px 0 0; color: var(--mute); font-size: 14px; }
+.switch-line button, .switch { border: 0; background: none; color: var(--ink); }
+.switch-line button { font-weight: 800; text-decoration: underline; cursor: pointer; font: inherit; }
+.err { color: #e2857f; min-height: 18px; font-size: 13px; }
+.ok { color: #7fd9a0; font-size: 13.5px; line-height: 1.5; background: rgba(90, 200, 130, .12); border: 1px solid rgba(90, 200, 130, .35); border-radius: 10px; padding: 10px 12px; margin: 4px 0; }
+.ok a, .ok button.linklike { color: #a6ffcc; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ripple Calm</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --pond-deep:#0c2530; --pond-mid:#123a49; --text:#eaf5f2; --text-dim:#a9c7c4; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{height:100%;background:radial-gradient(ellipse at 50% 30%, var(--pond-mid), var(--pond-deep) 75%);font-family:Quicksand,sans-serif;overflow:hidden;touch-action:none;color:var(--text);}
+  #pond{position:fixed;inset:0;width:100%;height:100%;display:block;}
+  .overlay{position:fixed;left:0;right:0;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:2;}
+  .top{top:24px;}
+  h1{font-weight:600;font-size:22px;}
+  .hint{margin-top:8px;font-size:13px;color:var(--text-dim);transition:opacity 1.2s;}
+  #sound{position:fixed;top:18px;right:16px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(234,245,242,.25);background:rgba(255,255,255,.05);color:var(--text);cursor:pointer;z-index:3;}
+</style>
+</head>
+<body>
+<canvas id="pond"></canvas>
+<button id="sound" aria-label="Sound toggle">🔈</button>
+<div class="overlay top"><h1>Ripple Calm</h1><div class="hint" id="hint">Touch the water. Breathe slowly.</div></div>
+<script>
+(function(){
+  const canvas=document.getElementById('pond'); const ctx=canvas.getContext('2d');
+  let W,H,DPR; const ripples=[];
+  function resize(){ DPR=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight; canvas.width=W*DPR; canvas.height=H*DPR; canvas.style.width=W+'px'; canvas.style.height=H+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+  addEventListener('resize', resize); resize();
+  function addRipple(x,y,s){ ripples.push({x,y,r:2,maxR:70+Math.random()*90*(s||1),alpha:.55,speed:1.1+Math.random()*.6}); if(ripples.length>60) ripples.shift(); }
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=ripples.length-1;i>=0;i--){
+      const rp=ripples[i]; rp.r+=rp.speed; rp.alpha*=.982;
+      if(rp.r>rp.maxR||rp.alpha<.01){ ripples.splice(i,1); continue; }
+      ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,Math.PI*2); ctx.strokeStyle=`rgba(189,238,240,${rp.alpha})`; ctx.lineWidth=1.6; ctx.stroke();
+      ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r*.62,0,Math.PI*2); ctx.strokeStyle=`rgba(111,201,201,${rp.alpha*.5})`; ctx.lineWidth=1; ctx.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  let dragging=false,last=0;
+  function pos(e){ const p=e.touches?e.touches[0]:e; return {x:p.clientX,y:p.clientY}; }
+  canvas.addEventListener('pointerdown', e=>{ dragging=true; const p=pos(e); addRipple(p.x,p.y,1.3); playTone(); document.getElementById('hint').style.opacity=0; });
+  canvas.addEventListener('pointermove', e=>{ if(!dragging) return; const now=performance.now(); if(now-last<90) return; last=now; const p=pos(e); addRipple(p.x,p.y,.8); playTone(true); });
+  addEventListener('pointerup', ()=> dragging=false);
+  let audioCtx=null,soundOn=true;
+  const notes=[392,440,523.25,587.33,659.25];
+  function playTone(soft){
+    if(!soundOn) return;
+    try{ audioCtx=audioCtx||new (AudioContext||webkitAudioContext)(); }catch(e){ return; }
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+    osc.type='sine'; osc.frequency.value=notes[Math.floor(Math.random()*notes.length)];
+    const now=audioCtx.currentTime, peak=soft?.05:.09;
+    gain.gain.setValueAtTime(.0001,now); gain.gain.linearRampToValueAtTime(peak,now+.05); gain.gain.exponentialRampToValueAtTime(.0001,now+1.6);
+    osc.connect(gain).connect(audioCtx.destination); osc.start(now); osc.stop(now+1.7);
+  }
+  document.getElementById('sound').onclick=()=>{ soundOn=!soundOn; document.getElementById('sound').textContent=soundOn?'🔈':'🔇'; };
+  setInterval(()=>{ if(ripples.length<4&&!dragging) addRipple(W*(.3+Math.random()*.4),H*(.3+Math.random()*.4),.6); },4500);
+})();
+</script>
+</body>
+</html>

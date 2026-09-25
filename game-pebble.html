@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pebble Stack</title>
+<style>
+  html,body{height:100%;margin:0;background:linear-gradient(#EDE7DA,#D7C9B8);font-family:Inter,system-ui;overflow:hidden;color:#5B5044}
+  canvas{position:fixed;inset:0;width:100%;height:100%}
+  h1{position:fixed;top:16px;left:16px;font-size:20px}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<h1>Pebble Stack</h1>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+const {Engine,World,Bodies,Body,Mouse,MouseConstraint,Runner}=Matter;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+let W,H; const engine=Engine.create(); engine.gravity.y=.35; const world=engine.world;
+function resize(){W=innerWidth;H=innerHeight;canvas.width=W;canvas.height=H;build();}
+let ground;
+function build(){
+  if(ground) World.clear(world,false);
+  ground=Bodies.rectangle(W/2,H-30,W*1.4,60,{isStatic:true,friction:1});
+  World.add(world,[ground,Bodies.rectangle(-40,H/2,80,H*3,{isStatic:true}),Bodies.rectangle(W+40,H/2,80,H*3,{isStatic:true})]);
+}
+addEventListener('resize',resize);resize();
+const colors=['#9C9284','#B5A78F','#8A8B80','#C7B49C'];
+function spawn(){
+  const r=Math.min(W,H)*.09;
+  const b=Bodies.polygon(W/2,80,6,r,{friction:.95,restitution:.02,frictionAir:.02});
+  Body.scale(b,1,.45); b.color=colors[Math.floor(Math.random()*colors.length)];
+  World.add(world,b); stones.push(b);
+}
+const stones=[]; spawn();
+const mouse=Mouse.create(canvas);
+World.add(world, MouseConstraint.create(engine,{mouse,constraint:{stiffness:.4,render:{visible:false}}}));
+canvas.addEventListener('pointerup',()=> setTimeout(spawn,400));
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#CBB79C'; ctx.fillRect(0,H-60,W,60);
+  for(const s of stones){
+    ctx.beginPath(); s.vertices.forEach((v,i)=> i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y)); ctx.closePath();
+    ctx.fillStyle=s.color; ctx.fill();
+  }
+  requestAnimationFrame(draw);
+}
+Runner.run(engine); draw();
+</script>
+</body>
+</html>

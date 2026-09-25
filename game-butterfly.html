@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Butterfly Path</title>
+<style>
+  html,body{height:100%;margin:0;background:linear-gradient(135deg,#F6E9F6,#E6F2EA);font-family:Nunito,system-ui;overflow:hidden;color:#6E5D74}
+  canvas{position:fixed;inset:0;width:100%;height:100%}
+  h1{position:fixed;top:16px;left:16px;font-size:20px}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<h1>Butterfly Path</h1>
+<script>
+const c=document.getElementById('scene'),x=c.getContext('2d');
+let W,H,path=[],bfly,target,drag=false;
+function resize(){W=innerWidth;H=innerHeight;c.width=W;c.height=H;path=[];
+  for(let i=0;i<=8;i++){const t=i/8;path.push({x:t*W,y:H*.5+Math.sin(t*Math.PI*2)*H*.22});}
+  if(!bfly) bfly={x:path[0].x,y:path[0].y}; target={x:bfly.x,y:bfly.y};
+}
+addEventListener('resize',resize);resize();
+function pos(e){const p=e.touches?e.touches[0]:e;return {x:p.clientX,y:p.clientY};}
+c.addEventListener('pointerdown',e=>{drag=true;target=pos(e);});
+c.addEventListener('pointermove',e=>{if(drag) target=pos(e);});
+addEventListener('pointerup',()=>drag=false);
+function loop(){
+  x.clearRect(0,0,W,H);
+  x.beginPath(); path.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));
+  x.strokeStyle='rgba(200,160,200,.7)'; x.lineWidth=8; x.stroke();
+  let tx,ty;
+  if(drag){tx=target.x;ty=target.y;}
+  else { let best=path[0],bd=1e9; for(const p of path){const d=(p.x-bfly.x)**2+(p.y-bfly.y)**2; if(d<bd){bd=d;best=p;}} tx=best.x;ty=best.y; }
+  bfly.x+=(tx-bfly.x)*.12; bfly.y+=(ty-bfly.y)*.12;
+  x.fillStyle='#c9a6d9'; x.beginPath(); x.ellipse(bfly.x,bfly.y,16,10,0,0,Math.PI*2); x.fill();
+  x.beginPath(); x.ellipse(bfly.x-10,bfly.y-6,14,8,-.4,0,Math.PI*2); x.fill();
+  x.beginPath(); x.ellipse(bfly.x+10,bfly.y-6,14,8,.4,0,Math.PI*2); x.fill();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

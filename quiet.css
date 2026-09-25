@@ -1,0 +1,25 @@
+/* ============================================================
+   quiet.css — small supplementary polish only.
+   All theme colours now live in dashboard.css / login.css /
+   ai.css / style.css, so this file no longer overrides them
+   (that duplication was the cause of the dark-on-dark text bug).
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap");
+
+/* Page-entrance animation used by inner (non-home, non-dashboard) pages */
+body:not(.home-page):not(.dash-page) .card,
+body:not(.home-page):not(.dash-page) .info-block,
+body:not(.home-page):not(.dash-page) .page-grid > * {
+  animation: riseIn .7s ease both;
+}
+@keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* Custom scrollbar for a calmer, on-brand feel */
+* { scrollbar-width: thin; scrollbar-color: #333338 transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #333338; border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: #45454c; }
+
+/* Text selection */
+::selection { background: rgba(91,179,245,.35); color: #fff; }
