@@ -113,12 +113,13 @@
   <article class="card info-block">
     <h2>Private journal</h2>
     <p>Notes stay with your My MindRay account on this device and, when you are signed in, with your saved record.</p>
+    <input type="text" id="journalHeading" class="ai-field" placeholder="Heading (optional)" style="margin-bottom:10px;" />
     <textarea id="journalText" class="ai-field" rows="6" placeholder="What felt heavy or light today?"></textarea>
     <button type="button" class="schedule-btn" id="saveJournal">Save entry</button>
   </article>
   <article class="card info-block">
     <h2>Earlier pages</h2>
-    <input type="search" id="journalSearch" class="ai-field" placeholder="Search your pages by date or text..." style="margin-bottom:12px;" />
+    <input type="search" id="journalSearch" class="ai-field" placeholder="Search by heading, text, or date..." style="margin-bottom:12px;" />
     <div id="journalList"></div>
   </article>
 </section>
@@ -191,4 +192,3 @@
   <script src="dashboard.js"></script>
 </body>
 </html>
-        
