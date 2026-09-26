@@ -13,6 +13,8 @@ create table if not exists public.profiles (
 alter table public.profiles add column if not exists personal_phone text;
 alter table public.profiles add column if not exists family_phone text;
 alter table public.profiles add column if not exists friend_phone text;
+alter table public.profiles add column if not exists country text;
+alter table public.profiles add column if not exists state text;
 
 create table if not exists public.user_state (
   id uuid primary key references auth.users(id) on delete cascade,
