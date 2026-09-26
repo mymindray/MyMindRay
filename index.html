@@ -159,13 +159,29 @@
   <div class="sheet" id="userSheet" hidden>
     <form class="sheet-card" id="userForm">
       <h3>Set up your profile</h3>
-      <p>Your username is how we greet you — it must be unused. The phone numbers help you, or someone close to you, get reached if it's ever needed. Use a different number in each field.</p>
+      <p>Your username is how we greet you — it must be unused. Your address sets the country code on your numbers. The phone numbers help you, or someone close to you, get reached if it's ever needed. Use a different number in each field.</p>
       <input id="usernameInput" maxlength="20" autocomplete="username" placeholder="Username" />
-      <input id="personalPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Your phone number" />
-      <input id="familyPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Family member's phone number" />
-      <input id="friendPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Friend's or warden's phone number (optional)" />
-      <p class="err field-err" id="phoneClashErr"></p>
-      <p class="err" id="userErr"></p>
+      <p class="err" id="usernameErr"></p>
+      <div class="addr-row">
+        <select id="addrCountrySelect" aria-label="Country"></select>
+        <select id="addrStateSelect" aria-label="State"></select>
+      </div>
+      <p class="err" id="addrErr"></p>
+      <div class="tel-row">
+        <span class="dial-chip" id="dialPersonal">+91</span>
+        <input id="personalPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Your phone number" />
+      </div>
+      <p class="err" id="personalPhoneErr"></p>
+      <div class="tel-row">
+        <span class="dial-chip" id="dialFamily">+91</span>
+        <input id="familyPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Family member's phone number" />
+      </div>
+      <p class="err" id="familyPhoneErr"></p>
+      <div class="tel-row">
+        <span class="dial-chip" id="dialFriend">+91</span>
+        <input id="friendPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Friend's or warden's phone number (optional)" />
+      </div>
+      <p class="err" id="friendPhoneErr"></p>
       <button type="submit" class="btn-main">Save & continue</button>
     </form>
   </div>
@@ -198,4 +214,3 @@
   </script>
 </body>
 </html>
-  
