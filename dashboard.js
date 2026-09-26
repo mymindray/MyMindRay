@@ -1032,7 +1032,7 @@ function renderProfile() {
     if (el) el.textContent = val || "Not set";
   };
   set("profileUser", p.username || localUser);
-  set("profileCity", [p.country, p.state, p.city].filter(Boolean).join(", ") || p.address || "Not set");
+  set("profileCity", [p.country, p.state].filter(Boolean).join(", ") || p.address || "Not set");
   set("profileEmail", p.email);
   set("profilePersonal", p.personalPhone);
   set("profileFamily", p.familyPhone);
@@ -1112,13 +1112,22 @@ function renderJournal() {
   const allRows = state.journal || [];
   const q = (document.getElementById("journalSearch")?.value || "").trim().toLowerCase();
   const rows = q
-    ? allRows.filter((j) => (j.day || "").toLowerCase().includes(q) || (j.text || "").toLowerCase().includes(q))
+    ? allRows.filter((j) =>
+        (j.day || "").toLowerCase().includes(q) ||
+        (j.text || "").toLowerCase().includes(q) ||
+        (j.heading || "").toLowerCase().includes(q)
+      )
     : allRows;
   list.innerHTML = rows.length
     ? rows.slice().reverse().map((j) => {
         const i = allRows.indexOf(j);
+        const heading = (j.heading || "").trim();
         return `<article class="note-card" data-i="${i}">
-          <header><strong>${j.day}</strong>
+          <header>
+            <div class="note-title">
+              <strong>${heading ? heading.replace(/</g, "&lt;") : j.day}</strong>
+              ${heading ? `<span class="note-date">${j.day}</span>` : ""}
+            </div>
             <span class="note-actions">
               <button type="button" class="edit-ico" data-edit-note="${i}" aria-label="Edit note">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
@@ -1146,10 +1155,16 @@ function renderJournal() {
     };
   });
   list.querySelectorAll("[data-del-note]").forEach((btn) => {
-    btn.onclick = () => {
+    btn.onclick = async () => {
       const i = Number(btn.dataset.delNote);
       if (!state.journal[i]) return;
-      if (!confirm("Delete this journal page? This cannot be undone.")) return;
+      const ok = await askSheet({
+        title: "Delete this page?",
+        body: "This journal page will be removed for good. This cannot be undone.",
+        ok: "Delete",
+        cancel: "Cancel"
+      });
+      if (!ok) return;
       state.journal.splice(i, 1);
       saveState();
       renderJournal();
@@ -1667,13 +1682,18 @@ function maybeDailyCheckin() {
   const savedName = localStorage.getItem("wl-username-" + accountUid);
   if (savedName) state.profile.username = savedName;
   try {
-    const { data: prof } = await client.from("profiles").select("username,email,personal_phone,family_phone,friend_phone").eq("id", accountUid).maybeSingle();
+    const { data: prof } = await client.from("profiles").select("username,email,personal_phone,family_phone,friend_phone,country,state").eq("id", accountUid).maybeSingle();
     if (prof) {
       if (prof.username) state.profile.username = prof.username;
       if (prof.email) state.profile.email = prof.email;
       if (prof.personal_phone) state.profile.personalPhone = prof.personal_phone;
       if (prof.family_phone) state.profile.familyPhone = prof.family_phone;
       if (prof.friend_phone) state.profile.friendPhone = prof.friend_phone;
+      if (prof.country) state.profile.country = prof.country;
+      if (prof.state) state.profile.state = prof.state;
+      if (!state.profile.address && (prof.country || prof.state)) {
+        state.profile.address = [prof.country, prof.state].filter(Boolean).join(", ");
+      }
     }
   } catch {}
   if (!state.profile.nameLocked) {
@@ -1763,12 +1783,15 @@ document.getElementById("journalSearch")?.addEventListener("input", () => render
 
 document.getElementById("saveJournal")?.addEventListener("click", () => {
   const box = document.getElementById("journalText");
+  const headingBox = document.getElementById("journalHeading");
   const text = (box && box.value.trim()) || "";
+  const heading = (headingBox && headingBox.value.trim()) || "";
   if (!text) return;
   state.journal = state.journal || [];
-  state.journal.push({ day: new Date().toLocaleDateString("en-GB"), text });
+  state.journal.push({ day: new Date().toLocaleDateString("en-GB"), heading, text });
   saveState();
   if (box) box.value = "";
+  if (headingBox) headingBox.value = "";
   renderJournal();
 });
 document.getElementById("editName")?.addEventListener("click", () => {
@@ -1828,7 +1851,6 @@ document.getElementById("editAddr")?.addEventListener("click", () => {
     <div class="form-grid">
       <label>Country<select class="ai-select" id="addrCountry">${opt(countries, countryNow)}</select></label>
       <label>State<select class="ai-select" id="addrState">${opt(states0, stateNow)}</select></label>
-      <label>City<input class="ai-select" id="addrCity" value="${(p.city||"").replace(/"/g,"")}" placeholder="City" /></label>
     </div>
     <div class="confirm-row"><button type="button" class="confirm-cancel">Cancel</button><button type="button" class="confirm-del">Save</button></div></div>`;
   document.body.appendChild(wrap);
@@ -1842,8 +1864,7 @@ document.getElementById("editAddr")?.addEventListener("click", () => {
   wrap.querySelector(".confirm-del").onclick = () => {
     state.profile.country = countryEl.value;
     state.profile.state = stateEl.value;
-    state.profile.city = document.getElementById("addrCity").value.trim();
-    state.profile.address = [state.profile.country, state.profile.state, state.profile.city].filter(Boolean).join(", ");
+    state.profile.address = [state.profile.country, state.profile.state].filter(Boolean).join(", ");
     saveState();
     renderProfile();
     wrap.remove();
