@@ -64,7 +64,9 @@ function validPassword(pw) {
 }
 
 function validUsername(name) {
-  const n = (name || "").trim();
+  const raw = name || "";
+  if (/\s/.test(raw)) return "Don't use spaces in your username.";
+  const n = raw.trim();
   if (n.length < 3) return "Username must be at least 3 characters.";
   if (n.length > 20) return "Username must be 20 characters or less.";
   if (!/^[A-Za-z0-9_]+$/.test(n)) return "Use letters, numbers, or underscore only.";
