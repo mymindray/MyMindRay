@@ -270,22 +270,32 @@ async function boot() {
             return;
           }
         }
-        const saved = await timed(sb.from("profiles").upsert({
-          id: user.id,
-          email: user.email,
-          username: name,
-          personal_phone: fullPersonal,
-          family_phone: fullFamily,
-          friend_phone: fullFriend || null,
-          country,
-          state: stateVal
-        }));
-        if (saved && saved.error && /duplicate|unique/i.test(saved.error.message || "")) {
-          if (usernameErr) usernameErr.textContent = "That username is already taken.";
-          if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
-          return;
-        }
+        // Save the full profile to user_state first — this is the record the
+        // rest of the app actually reads on the next login, and it can't
+        // fail on a missing column since it's a schema-less jsonb blob. Do
+        // this unconditionally, before anything that could throw, so a
+        // problem below can never leave it unsaved.
         await persistUserState();
+        // The profiles table is a secondary copy (used for the username-
+        // uniqueness check). If this fails — e.g. its columns are out of
+        // date — it must never take the user_state save down with it.
+        try {
+          const saved = await timed(sb.from("profiles").upsert({
+            id: user.id,
+            email: user.email,
+            username: name,
+            personal_phone: fullPersonal,
+            family_phone: fullFamily,
+            friend_phone: fullFriend || null,
+            country,
+            state: stateVal
+          }));
+          if (saved && saved.error && /duplicate|unique/i.test(saved.error.message || "")) {
+            if (usernameErr) usernameErr.textContent = "That username is already taken.";
+            if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+            return;
+          }
+        } catch (_) {}
       }
     } catch (_) {}
     finish();
