@@ -37,11 +37,10 @@ Demo mode is available while logged out. After login the demo button is hidden a
 | Layer | Choice |
 | --- | --- |
 | Interface | HTML5, CSS3, vanilla JavaScript |
-| Auth | Supabase Auth (email + Google) |
-| Data | PostgreSQL on Supabase (`profiles`, `user_state`) |
-| Client copy | `localStorage` / `sessionStorage` |
-| Media | YouTube embed, Web Audio, camera / gallery |
+| Backend | Supabase |
 | Hosting | [Vercel](https://mymindray.vercel.app) |
+
+Sign-in and account data are handled with **Supabase**.
 
 ---
 
@@ -60,40 +59,6 @@ doctors.html        Clinician directory
 profile.html        Account
 notifications.html  Reminders
 ```
-
----
-
-## Run locally
-
-```bash
-git clone https://github.com/YOUR_USER/YOUR_REPO.git
-cd YOUR_REPO
-```
-
-Serve the folder with any static server (example):
-
-```bash
-npx serve -l 7700
-```
-
-Open `http://localhost:7700`.
-
-### Environment
-
-Create `supabase-config.js` in the project root (do not commit secret keys):
-
-```js
-window.SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
-window.SUPABASE_ANON_KEY = "YOUR_PUBLISHABLE_KEY";
-```
-
-In the Supabase project:
-
-1. Enable **Email** and **Google** auth.  
-2. Add the site URL and redirect URLs (`http://localhost:7700` and `https://mymindray.vercel.app`).  
-3. Tables used: `profiles`, `user_state`.
-
-Password rule on email sign-up: 8+ characters, letters and numbers only, at least one number, no symbols.
 
 ---
 
