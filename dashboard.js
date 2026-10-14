@@ -233,6 +233,7 @@ function liveKey(uid) {
 }
 
 function saveState() {
+  try { computeScore(); } catch (e) { console.warn("score", e); }
   if (DEMO_MODE || !accountUid) {
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
     return;
@@ -252,8 +253,11 @@ function saveState() {
       username: p.username || "",
       personal_phone: p.personalPhone || "",
       family_phone: p.familyPhone || "",
-      friend_phone: p.friendPhone || ""
+      friend_phone: p.friendPhone || "",
+      country: p.country || "",
+      state: p.state || ""
     });
+    syncLeaderboard();
   }
 }
 
@@ -634,6 +638,96 @@ function renderStats() {
 /* ---------- Streaks ---------- */
 const GOOD_MOODS = new Set(["calm", "okay"]);
 const BAD_MOODS = new Set(["low", "stressed"]);
+
+/* ---------- Leaderboard scoring ----------
+   Daily points (each day is stored once in state.scoreDays, so nothing is double counted):
+   +1 opened the site that day (streak day)
+   +2 mood calm/okay  |  +1 mood low/stressed  |  0 if low/stressed for more than 3 days in a row
+   +1 finished the Relax exercise
+   +1 per dashboard task marked done
+   +3 bonus every 7th day of an open-the-site streak
+   Total = sum of all days. It is synced to the Supabase "leaderboard" table. */
+const SCORE_RULES = { visit: 1, moodGood: 2, moodLow: 1, exercise: 1, task: 1, streakBonus: 3, streakEvery: 7, lowCutoff: 3 };
+
+function badRunEnding(day, map) {
+  let n = 0;
+  const d = new Date(day + "T12:00:00");
+  while (BAD_MOODS.has(map[todayKey(d)])) { n += 1; d.setDate(d.getDate() - 1); }
+  return n;
+}
+
+function moodPointsFor(day, map) {
+  const m = map[day];
+  if (!m) return 0;
+  if (BAD_MOODS.has(m)) return badRunEnding(day, map) > SCORE_RULES.lowCutoff ? 0 : SCORE_RULES.moodLow;
+  return SCORE_RULES.moodGood;
+}
+
+function sumScoreDays(days) {
+  let total = 0;
+  Object.values(days || {}).forEach((e) => {
+    total += (e.v || 0) + (e.m || 0) + (e.e || 0) + (e.t || 0) + (e.b || 0);
+  });
+  return total;
+}
+
+function computeScore() {
+  if (DEMO_MODE) return;
+  const today = todayKey();
+  if (!state.scoreDays || typeof state.scoreDays !== "object") state.scoreDays = {};
+  const map = dayMoodMap();
+
+  // one-time backfill from history so existing users don't start from zero
+  if (!state.scoreInit) {
+    const days = new Set([...(state.visitDays || []), ...(state.exerciseDoneDays || []), ...Object.keys(map)]);
+    days.delete(today);
+    days.forEach((day) => {
+      state.scoreDays[day] = {
+        v: (state.visitDays || []).includes(day) ? SCORE_RULES.visit : 0,
+        m: moodPointsFor(day, map),
+        e: (state.exerciseDoneDays || []).includes(day) ? SCORE_RULES.exercise : 0,
+        t: 0, b: 0
+      };
+    });
+    state.scoreInit = true;
+  }
+
+  const streak = computeCheckinStreak();
+  const visited = (state.visitDays || []).includes(today);
+  const doneTasks = state.sourceDay === today ? (state.sources || []).filter((x) => x.done).length : 0;
+  state.scoreDays[today] = {
+    v: visited ? SCORE_RULES.visit : 0,
+    m: moodPointsFor(today, map),
+    e: exerciseDoneToday() ? SCORE_RULES.exercise : 0,
+    t: doneTasks * SCORE_RULES.task,
+    b: visited && streak > 0 && streak % SCORE_RULES.streakEvery === 0 ? SCORE_RULES.streakBonus : 0
+  };
+  state.score = sumScoreDays(state.scoreDays);
+  state.scoreStreak = streak;
+  try {
+    window.dispatchEvent(new CustomEvent("mr-score", { detail: { score: state.score, streak, today: state.scoreDays[today] } }));
+  } catch {}
+}
+
+let lbClient = null, lbTimer = null, lbLast = "";
+function syncLeaderboard() {
+  if (DEMO_MODE || !accountUid || typeof createSb !== "function") return;
+  const p = state.profile || {};
+  const name = (p.username || (p.fullName || p.name || "").trim().split(/\s+/)[0] || "Member").slice(0, 24);
+  const row = { user_id: accountUid, username: name, avatar: p.avatar || "Luna", score: Math.max(0, state.score || 0), streak: state.scoreStreak || 0 };
+  const sig = JSON.stringify(row);
+  if (sig === lbLast) return;
+  clearTimeout(lbTimer);
+  lbTimer = setTimeout(async () => {
+    try {
+      lbClient = lbClient || createSb();
+      if (!lbClient) return;
+      const { error } = await lbClient.from("leaderboard").upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+      if (!error) lbLast = sig;
+      else console.warn("leaderboard sync", error.message);
+    } catch (e) { console.warn("leaderboard sync", e); }
+  }, 700);
+}
 
 function dayMoodMap() {
   const map = {};
@@ -1032,7 +1126,7 @@ function renderProfile() {
     if (el) el.textContent = val || "Not set";
   };
   set("profileUser", p.username || localUser);
-  set("profileCity", [p.country, p.state].filter(Boolean).join(", ") || p.address || "Not set");
+  set("profileCity", (p.country || p.state) ? [p.country, p.state].filter(Boolean).join(", ") : "None, None");
   set("profileEmail", p.email);
   set("profilePersonal", p.personalPhone);
   set("profileFamily", p.familyPhone);
@@ -1681,6 +1775,22 @@ function maybeDailyCheckin() {
   state.profile.email = session.user.email || state.profile.email;
   const savedName = localStorage.getItem("wl-username-" + accountUid);
   if (savedName) state.profile.username = savedName;
+  // Same rule as username above: whatever this device has on file for the
+  // phone numbers and address always wins, so what a person just typed in
+  // shows up immediately even if the server round-trip is slow or fails.
+  const savedPersonal = localStorage.getItem("wl-personalphone-" + accountUid);
+  if (savedPersonal) state.profile.personalPhone = savedPersonal;
+  const savedFamily = localStorage.getItem("wl-familyphone-" + accountUid);
+  if (savedFamily) state.profile.familyPhone = savedFamily;
+  const savedFriend = localStorage.getItem("wl-friendphone-" + accountUid);
+  if (savedFriend) state.profile.friendPhone = savedFriend;
+  const savedCountry = localStorage.getItem("wl-country-" + accountUid);
+  if (savedCountry) state.profile.country = savedCountry;
+  const savedState = localStorage.getItem("wl-state-" + accountUid);
+  if (savedState) state.profile.state = savedState;
+  if (savedCountry || savedState) {
+    state.profile.address = [state.profile.country, state.profile.state].filter(Boolean).join(", ");
+  }
   try {
     const { data: prof } = await client.from("profiles").select("username,email,personal_phone,family_phone,friend_phone,country,state").eq("id", accountUid).maybeSingle();
     if (prof) {
@@ -1843,10 +1953,12 @@ document.getElementById("editAddr")?.addEventListener("click", () => {
   const p = state.profile || {};
   const places = (typeof PLACES !== "undefined" && PLACES) ? PLACES : { India: ["Assam","Punjab","Delhi"], Japan: ["Hokkaido","Tokyo","Osaka"] };
   const countries = Object.keys(places);
-  const countryNow = countries.includes(p.country) ? p.country : (countries[0] || "");
+  const countryNow = countries.includes(p.country) ? p.country : "";
   const states0 = places[countryNow] || [];
-  const stateNow = states0.includes(p.state) ? p.state : (states0[0] || "");
-  const opt = (arr, sel) => arr.map((n) => `<option value="${n}" ${n===sel?"selected":""}>${n}</option>`).join("");
+  const stateNow = states0.includes(p.state) ? p.state : "";
+  // "None" is always the first choice, so an address can be empty.
+  const opt = (arr, sel) => ['<option value="" ' + (sel ? "" : "selected") + '>None</option>']
+    .concat(arr.map((n) => `<option value="${n}" ${n===sel?"selected":""}>${n}</option>`)).join("");
   wrap.innerHTML = `<div class="confirm-card"><h3>Address</h3>
     <div class="form-grid">
       <label>Country<select class="ai-select" id="addrCountry">${opt(countries, countryNow)}</select></label>
@@ -1858,13 +1970,21 @@ document.getElementById("editAddr")?.addEventListener("click", () => {
   const stateEl = document.getElementById("addrState");
   countryEl.onchange = () => {
     const list = places[countryEl.value] || [];
-    stateEl.innerHTML = opt(list, list[0] || "");
+    stateEl.innerHTML = opt(list, "");
   };
   wrap.querySelector(".confirm-cancel").onclick = () => wrap.remove();
   wrap.querySelector(".confirm-del").onclick = () => {
     state.profile.country = countryEl.value;
-    state.profile.state = stateEl.value;
+    state.profile.state = countryEl.value ? stateEl.value : "";
     state.profile.address = [state.profile.country, state.profile.state].filter(Boolean).join(", ");
+    // Keep this device's copy in step, otherwise the older saved address
+    // would win the next time the dashboard loads.
+    if (accountUid) {
+      if (state.profile.country) localStorage.setItem("wl-country-" + accountUid, state.profile.country);
+      else localStorage.removeItem("wl-country-" + accountUid);
+      if (state.profile.state) localStorage.setItem("wl-state-" + accountUid, state.profile.state);
+      else localStorage.removeItem("wl-state-" + accountUid);
+    }
     saveState();
     renderProfile();
     wrap.remove();
