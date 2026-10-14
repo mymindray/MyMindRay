@@ -182,7 +182,7 @@ async function boot() {
     if (btn) { btn.disabled = true; btn.textContent = "Saving..."; }
     if (!sb) {
       if (saveErr) saveErr.textContent = "Couldn't reach the server (Supabase failed to load). Check your connection and reload the page, then try again.";
-      if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+      if (btn) { btn.disabled = false; btn.textContent = "Save"; }
       return;
     }
     try {
@@ -194,14 +194,18 @@ async function boot() {
         const rpc = await timed(sb.rpc("username_taken", { name }));
         if (rpc && rpc.data === true) {
           if (usernameErr) usernameErr.textContent = "That username is already taken.";
-          if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+          if (btn) { btn.disabled = false; btn.textContent = "Save"; }
           return;
         }
       }
       const stateResult = await persistUserState();
-      if (!stateResult.ok) {
+      // If the database tables haven't been created yet (setup.sql not run),
+      // don't block the sign-up: the username is kept on this device and
+      // will sync once the tables exist.
+      const tableMissing = !stateResult.ok && /schema cache|could not find the table|does not exist/i.test(stateResult.error || "");
+      if (!stateResult.ok && !tableMissing) {
         if (saveErr) saveErr.textContent = "Couldn't save to the server (" + stateResult.error + "). Your entry is still here — check your connection and try again.";
-        if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+        if (btn) { btn.disabled = false; btn.textContent = "Save"; }
         return;
       }
       // The profiles table is a secondary copy (used for the username-
@@ -214,12 +218,12 @@ async function boot() {
         }));
         if (saved && saved.error && /duplicate|unique/i.test(saved.error.message || "")) {
           if (usernameErr) usernameErr.textContent = "That username is already taken.";
-          if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+          if (btn) { btn.disabled = false; btn.textContent = "Save"; }
           return;
         }
       } catch (_) {}
     } catch (_) {}
-    if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+    if (btn) { btn.disabled = false; btn.textContent = "Save"; }
     finish();
   });
 }
