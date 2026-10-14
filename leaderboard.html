@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <meta name="description" content="Care messages." />
+  <meta name="description" content="Live leaderboard — top 10 members by wellness progress." />
   <meta name="theme-color" content="#080808" />
   <meta name="robots" content="index,follow" />
   <title>Leaderboard — My MindRay</title>
@@ -13,6 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="dashboard.css" />
   <link rel="stylesheet" href="quiet.css" />
+  <link rel="stylesheet" href="leaderboard.css" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 </head>
 <body class="font-inter antialiased">
@@ -52,7 +53,7 @@
         <a class="nav-orb " href="calendar.html" data-label="Calendar" title="Calendar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         </a>
-        <a class="nav-orb active" href="messages.html" data-label="Leaderboard" title="Leaderboard">
+        <a class="nav-orb active" href="messages.html" data-label="Messages" title="Messages">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </a>
         <a class="nav-orb " href="care.html" data-label="Care tools" title="Care tools">
@@ -108,12 +109,33 @@
           </div>
         </header>
         
-  <section class="page-grid">
-    <article class="card info-block">
-      <h2>Coming soon</h2>
-      <p>The leaderboard will show gentle weekly streaks — check-in days and wellness days — so you can see that other people are also showing up. It will never rank private notes or mood scores.</p>
-      <p>Nothing is live here yet. Use the dashboard and Relax page as you already do. This page is marked so the orange active pill has a home.</p>
-    </article>
+  <section class="lb-wrap">
+    <div class="lb-top">
+      <article class="card lb-board">
+        <div class="lb-head">
+          <h2>Top 10 this season</h2>
+          <span class="lb-live off" id="lbLive"><i></i><span id="lbLiveTxt">Connecting…</span></span>
+        </div>
+        <div class="lb-podium" id="lbPodium"></div>
+        <ol class="lb-list" id="lbList"></ol>
+        <p class="lb-msg" id="lbMsg" hidden></p>
+      </article>
+      <div class="lb-side">
+        <article class="card lb-me" id="lbMe"><h3>Your standing</h3><p class="lb-note">Loading…</p></article>
+        <article class="card lb-rules">
+          <h3>How points work</h3>
+          <ul>
+            <li><span>+1</span>Open My MindRay each day to keep your streak going</li>
+            <li><span>+2</span>Check in feeling calm or okay</li>
+            <li><span>+1</span>Check in feeling low or stressed (that is okay too)</li>
+            <li><span>+1</span>Finish the Relax exercise</li>
+            <li><span>+1</span>Every task you tick off on the dashboard</li>
+            <li><span>+3</span>Bonus on every 7th day of your streak</li>
+          </ul>
+          <p class="lb-note">If you feel low or stressed for more than 3 days in a row, the mood point pauses, but the Relax exercise and tasks still earn points. Only your username, avatar, streak and score are shown. Moods and notes stay private.</p>
+        </article>
+      </div>
+    </div>
   </section>
   
       </main>
@@ -181,6 +203,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="dashboard.js"></script>
+  <script src="leaderboard.js"></script>
 </body>
 </html>
-  
