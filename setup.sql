@@ -95,3 +95,66 @@ end $$;
 
 -- refresh the API cache so the new tables are found straight away
 notify pgrst, 'reload schema';
+
+-- ============================================================
+-- PERSON-TO-PERSON MESSAGES (run this block once in Supabase → SQL Editor)
+-- chat_directory: the ONLY thing other people can see about you
+--                 (name, username, profile picture). No email, no phone.
+-- chat_messages:  text only. Visible only to the sender and the recipient.
+-- ============================================================
+create table if not exists public.chat_directory (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  username text not null default 'Member',
+  display_name text default '',
+  avatar text default 'Luna',
+  updated_at timestamptz default now()
+);
+
+alter table public.chat_directory enable row level security;
+
+drop policy if exists "directory read all" on public.chat_directory;
+create policy "directory read all" on public.chat_directory for select to authenticated using (true);
+drop policy if exists "directory insert own" on public.chat_directory;
+create policy "directory insert own" on public.chat_directory for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "directory update own" on public.chat_directory;
+create policy "directory update own" on public.chat_directory for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+grant select, insert, update on public.chat_directory to authenticated;
+
+create table if not exists public.chat_messages (
+  id bigint generated always as identity primary key,
+  sender_id uuid not null references auth.users(id) on delete cascade,
+  recipient_id uuid not null references auth.users(id) on delete cascade,
+  body text not null check (char_length(btrim(body)) between 1 and 1000),
+  created_at timestamptz not null default now(),
+  read_at timestamptz,
+  check (sender_id <> recipient_id)
+);
+
+create index if not exists chat_messages_pair_idx on public.chat_messages (sender_id, recipient_id, created_at desc);
+create index if not exists chat_messages_inbox_idx on public.chat_messages (recipient_id, read_at, created_at desc);
+
+alter table public.chat_messages enable row level security;
+
+drop policy if exists "chat read mine" on public.chat_messages;
+create policy "chat read mine" on public.chat_messages for select to authenticated
+  using (auth.uid() = sender_id or auth.uid() = recipient_id);
+drop policy if exists "chat send as me" on public.chat_messages;
+create policy "chat send as me" on public.chat_messages for insert to authenticated
+  with check (auth.uid() = sender_id);
+drop policy if exists "chat mark read" on public.chat_messages;
+create policy "chat mark read" on public.chat_messages for update to authenticated
+  using (auth.uid() = recipient_id) with check (auth.uid() = recipient_id);
+
+-- the recipient may only change read_at, nothing else
+grant select, insert on public.chat_messages to authenticated;
+grant update (read_at) on public.chat_messages to authenticated;
+
+-- realtime so new messages and notifications arrive instantly
+do $$
+begin
+  alter publication supabase_realtime add table public.chat_messages;
+exception when duplicate_object then null;
+end $$;
+
+notify pgrst, 'reload schema';
