@@ -92,3 +92,6 @@ begin
   alter publication supabase_realtime add table public.leaderboard;
 exception when duplicate_object then null;
 end $$;
+
+-- refresh the API cache so the new tables are found straight away
+notify pgrst, 'reload schema';
