@@ -35,7 +35,7 @@ function localAddr(user) {
 }
 
 function isComplete(p) {
-  return !!(p && p.username && p.personal_phone && p.family_phone && p.country && p.state);
+  return !!(p && p.username);
 }
 
 async function loadProfile(user) {
@@ -111,111 +111,33 @@ async function boot() {
     return;
   }
 
-  // Username, address, or phone details are missing (new sign-up, or a
-  // Google sign-in that has never filled this in) — ask for whatever is
-  // left, pre-filling anything already on file.
+  // No username yet (new sign-up, or a Google sign-in that has never set
+  // one) — ask for just the username.
   const existingUsername = (profile && profile.username) || "";
+  const addrSheet = document.getElementById("addrSheet");
+  const closeAddrSheet = () => {
+    if (!addrSheet) return;
+    addrSheet.hidden = true;
+    addrSheet.setAttribute("hidden", "");
+  };
+  document.getElementById("addrSheetClose")?.addEventListener("click", closeAddrSheet);
 
-  const countrySelect = document.getElementById("addrCountrySelect");
-  const stateSelect = document.getElementById("addrStateSelect");
-  const dialChips = [
-    document.getElementById("dialPersonal"),
-    document.getElementById("dialFamily"),
-    document.getElementById("dialFriend")
-  ];
-  const opt = (val) => `<option value="${val}">${val}</option>`;
-  const countryNames = Object.keys(COUNTRY_DATA);
-  if (countrySelect) countrySelect.innerHTML = countryNames.map(opt).join("");
-  function fillStates(country, selected) {
-    const list = (COUNTRY_DATA[country] && COUNTRY_DATA[country].states) || [];
-    if (stateSelect) stateSelect.innerHTML = list.map(opt).join("");
-    if (stateSelect && selected && list.includes(selected)) stateSelect.value = selected;
-  }
-  function updateDialChips() {
-    const dial = (COUNTRY_DATA[countrySelect?.value] && COUNTRY_DATA[countrySelect.value].dial) || "";
-    dialChips.forEach((chip) => { if (chip) chip.textContent = dial; });
-  }
-  const startCountry = (profile && countryNames.includes(profile.country)) ? profile.country : countryNames[0];
-  if (countrySelect) countrySelect.value = startCountry;
-  fillStates(startCountry, profile && profile.state);
-  updateDialChips();
-  countrySelect?.addEventListener("change", () => {
-    fillStates(countrySelect.value);
-    updateDialChips();
-  });
-
-  const stripDial = (v) => (v || "").replace(/^\+\d+\s*/, "");
-  if (profile) {
-    if (profile.username) document.getElementById("usernameInput").value = profile.username;
-    if (profile.personal_phone) document.getElementById("personalPhoneInput").value = stripDial(profile.personal_phone);
-    if (profile.family_phone) document.getElementById("familyPhoneInput").value = stripDial(profile.family_phone);
-    if (profile.friend_phone) document.getElementById("friendPhoneInput").value = stripDial(profile.friend_phone);
-  }
+  if (existingUsername) document.getElementById("usernameInput").value = existingUsername;
   sheet.hidden = false;
   document.getElementById("userForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = document.getElementById("usernameInput").value.trim();
-    const personalPhone = document.getElementById("personalPhoneInput").value.trim();
-    const familyPhone = document.getElementById("familyPhoneInput").value.trim();
-    const friendPhone = document.getElementById("friendPhoneInput").value.trim();
-    const country = countrySelect ? countrySelect.value : "";
-    const stateVal = stateSelect ? stateSelect.value : "";
-    const dial = (COUNTRY_DATA[country] && COUNTRY_DATA[country].dial) || "";
     const usernameErr = document.getElementById("usernameErr");
-    const addrErr = document.getElementById("addrErr");
-    const personalErr = document.getElementById("personalPhoneErr");
-    const familyErr = document.getElementById("familyPhoneErr");
-    const friendErr = document.getElementById("friendPhoneErr");
-    const allErrs = [usernameErr, addrErr, personalErr, familyErr, friendErr];
+    const saveErr = document.getElementById("saveErr");
     const btn = e.target.querySelector("button[type=submit]");
-    allErrs.forEach((el) => { if (el) el.textContent = ""; });
+    [usernameErr, saveErr].forEach((el) => { if (el) el.textContent = ""; });
 
-    let hasError = false;
     const bad = typeof validUsername === "function" ? validUsername(name) : (!name || name.length < 3 ? "Enter a username." : "");
-    if (bad) { if (usernameErr) usernameErr.textContent = bad; hasError = true; }
-
-    if (!country || !stateVal) {
-      if (addrErr) addrErr.textContent = "Select your country and state.";
-      hasError = true;
-    }
-
-    const personalPhoneErr = typeof validPhone === "function" ? validPhone(personalPhone, "your phone number", true) : "";
-    if (personalPhoneErr) { if (personalErr) personalErr.textContent = personalPhoneErr; hasError = true; }
-    const familyPhoneErr = typeof validPhone === "function" ? validPhone(familyPhone, "a family member's phone number", true) : "";
-    if (familyPhoneErr) { if (familyErr) familyErr.textContent = familyPhoneErr; hasError = true; }
-    const friendPhoneErr = typeof validPhone === "function" ? validPhone(friendPhone, "the friend's/warden's phone number", false) : "";
-    if (friendPhoneErr) { if (friendErr) friendErr.textContent = friendPhoneErr; hasError = true; }
-    if (hasError) return;
-
-    // Flag duplicate numbers under every field that shares the value, not
-    // just one shared message at the bottom.
-    const norm = typeof normalizePhone === "function" ? normalizePhone : (v) => (v || "").replace(/[^0-9]/g, "");
-    const entries = [
-      { key: "personal", el: personalErr, val: norm(personalPhone) },
-      { key: "family", el: familyErr, val: norm(familyPhone) },
-      { key: "friend", el: friendErr, val: norm(friendPhone) }
-    ].filter((it) => it.val);
-    const clashMsg = "Don't use this number in more than one field — each number must be different.";
-    let clashed = false;
-    entries.forEach((it, i) => {
-      const dupe = entries.some((other, j) => j !== i && other.val === it.val);
-      if (dupe && it.el) { it.el.textContent = clashMsg; clashed = true; }
-    });
-    if (clashed) return;
-
-    // Store numbers with the dial code that matches the chosen address.
-    const fullPersonal = dial ? `${dial} ${personalPhone}` : personalPhone;
-    const fullFamily = dial ? `${dial} ${familyPhone}` : familyPhone;
-    const fullFriend = friendPhone ? (dial ? `${dial} ${friendPhone}` : friendPhone) : "";
-    const address = [country, stateVal].filter(Boolean).join(", ");
+    if (bad) { if (usernameErr) usernameErr.textContent = bad; return; }
 
     function finish() {
       localStorage.setItem("wl-username-" + user.id, name);
-      localStorage.setItem("wl-personalphone-" + user.id, fullPersonal);
-      localStorage.setItem("wl-familyphone-" + user.id, fullFamily);
-      if (fullFriend) localStorage.setItem("wl-friendphone-" + user.id, fullFriend);
-      localStorage.setItem("wl-country-" + user.id, country);
-      localStorage.setItem("wl-state-" + user.id, stateVal);
+      // Close the username popup and open the address reminder in its place.
       sheet.hidden = true;
       sheet.setAttribute("hidden", "");
       welcome.hidden = false;
@@ -226,78 +148,78 @@ async function boot() {
         getStarted.href = "dashboard.html";
         getStarted.textContent = "Open dashboard";
       }
+      if (addrSheet) {
+        addrSheet.hidden = false;
+        addrSheet.removeAttribute("hidden");
+      }
     }
 
-    // Save everything about the account — not just the username — so it's
-    // waiting in the database the moment this person logs in from another
-    // device or the web.
+    // Save the username to the account so it's waiting in the database the
+    // moment this person logs in from another device. Other profile fields
+    // (address, phones) are kept exactly as they were.
     async function persistUserState() {
-      if (!sb) return;
+      if (!sb) return { ok: false, error: "No Supabase client." };
       try {
-        const { data: existing } = await sb.from("user_state").select("data").eq("id", user.id).maybeSingle();
+        const { data: existing, error: readErr } = await sb.from("user_state").select("data").eq("id", user.id).maybeSingle();
+        if (readErr) return { ok: false, error: readErr.message || "Could not read your saved data." };
         const base = (existing && existing.data) || {};
         const profileData = { ...(base.profile || {}) };
         profileData.username = name;
         profileData.email = user.email;
-        profileData.personalPhone = fullPersonal;
-        profileData.familyPhone = fullFamily;
-        profileData.friendPhone = fullFriend;
-        profileData.country = country;
-        profileData.state = stateVal;
-        profileData.address = address;
         const merged = { ...base, profile: profileData };
-        await sb.from("user_state").upsert({
+        const { error: writeErr } = await sb.from("user_state").upsert({
           id: user.id,
           data: merged,
           updated_at: new Date().toISOString()
         });
-      } catch (_) {}
+        if (writeErr) return { ok: false, error: writeErr.message || "Could not save your profile." };
+        return { ok: true };
+      } catch (err) {
+        return { ok: false, error: (err && err.message) || "Unexpected error while saving." };
+      }
     }
 
     if (btn) { btn.disabled = true; btn.textContent = "Saving..."; }
+    if (!sb) {
+      if (saveErr) saveErr.textContent = "Couldn't reach the server (Supabase failed to load). Check your connection and reload the page, then try again.";
+      if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+      return;
+    }
     try {
-      if (sb) {
-        const timed = (p) => Promise.race([
-          p,
-          new Promise((resolve) => setTimeout(() => resolve({ data: null, error: { message: "timeout" } }), 4000))
-        ]);
-        const usernameChanged = name.toLowerCase() !== existingUsername.toLowerCase();
-        if (usernameChanged) {
-          const rpc = await timed(sb.rpc("username_taken", { name }));
-          if (rpc && rpc.data === true) {
-            if (usernameErr) usernameErr.textContent = "That username is already taken.";
-            if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
-            return;
-          }
+      const timed = (p) => Promise.race([
+        p,
+        new Promise((resolve) => setTimeout(() => resolve({ data: null, error: { message: "timeout" } }), 4000))
+      ]);
+      if (name.toLowerCase() !== existingUsername.toLowerCase()) {
+        const rpc = await timed(sb.rpc("username_taken", { name }));
+        if (rpc && rpc.data === true) {
+          if (usernameErr) usernameErr.textContent = "That username is already taken.";
+          if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+          return;
         }
-        // Save the full profile to user_state first — this is the record the
-        // rest of the app actually reads on the next login, and it can't
-        // fail on a missing column since it's a schema-less jsonb blob. Do
-        // this unconditionally, before anything that could throw, so a
-        // problem below can never leave it unsaved.
-        await persistUserState();
-        // The profiles table is a secondary copy (used for the username-
-        // uniqueness check). If this fails — e.g. its columns are out of
-        // date — it must never take the user_state save down with it.
-        try {
-          const saved = await timed(sb.from("profiles").upsert({
-            id: user.id,
-            email: user.email,
-            username: name,
-            personal_phone: fullPersonal,
-            family_phone: fullFamily,
-            friend_phone: fullFriend || null,
-            country,
-            state: stateVal
-          }));
-          if (saved && saved.error && /duplicate|unique/i.test(saved.error.message || "")) {
-            if (usernameErr) usernameErr.textContent = "That username is already taken.";
-            if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
-            return;
-          }
-        } catch (_) {}
       }
+      const stateResult = await persistUserState();
+      if (!stateResult.ok) {
+        if (saveErr) saveErr.textContent = "Couldn't save to the server (" + stateResult.error + "). Your entry is still here — check your connection and try again.";
+        if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+        return;
+      }
+      // The profiles table is a secondary copy (used for the username-
+      // uniqueness check). A failure here must never undo the save above.
+      try {
+        const saved = await timed(sb.from("profiles").upsert({
+          id: user.id,
+          email: user.email,
+          username: name
+        }));
+        if (saved && saved.error && /duplicate|unique/i.test(saved.error.message || "")) {
+          if (usernameErr) usernameErr.textContent = "That username is already taken.";
+          if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
+          return;
+        }
+      } catch (_) {}
     } catch (_) {}
+    if (btn) { btn.disabled = false; btn.textContent = "Save & continue"; }
     finish();
   });
 }
