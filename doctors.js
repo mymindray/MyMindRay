@@ -601,8 +601,8 @@ function renderList() {
   const p = profileAddr();
   const hint = document.getElementById("docHint");
   if (!p.country) {
-    if (hint) hint.textContent = "Pick a country and state on your profile. The list will follow that place only.";
-    box.innerHTML = "<p class='stat-copy'>No place selected yet.</p>";
+    if (hint) hint.innerHTML = 'Add your address in your <a href="profile.html" style="text-decoration:underline">profile</a> to show nearby doctors.';
+    box.innerHTML = "<p class='stat-copy'>No address added yet. <a href=\"profile.html\" style=\"text-decoration:underline\">Add it in your profile</a> to see nearby doctors.</p>";
     return;
   }
   const here = nearby();
@@ -610,6 +610,10 @@ function renderList() {
   const stateTitle = p.state || p.country;
   if (hint) {
     hint.textContent = "Clinicians listed for " + p.country + (p.state ? ", " + p.state : "") + ". Confirm the clinic before you visit. Sample directory only.";
+  }
+  if (!p.state) {
+    box.innerHTML = `<h3 class="doc-head">${p.country}</h3>` + (here.length ? here.map(card).join("") : "<p class='stat-copy'>No listed clinicians for this country yet.</p>");
+    return;
   }
   let html = `<h3 class="doc-head">${stateTitle}</h3>`;
   html += here.length ? here.map(card).join("") : "<p class='stat-copy'>No listed clinicians for this state yet. Other states in the same country are below.</p>";
