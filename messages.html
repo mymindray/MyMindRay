@@ -13,6 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="dashboard.css" />
   <link rel="stylesheet" href="quiet.css" />
+  <link rel="stylesheet" href="chat.css" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 </head>
 <body class="font-inter antialiased">
@@ -109,10 +110,16 @@
         </header>
         
   <section class="page-grid">
-    <article class="card info-block">
-      <h2>Coming soon</h2>
-      <p>Messages will let you talk with other people who use My MindRay when family is not the person you can open up to. Many people tell a friend more than they tell a parent. This page is for that kind of quiet peer talk — not a public feed and not a clinic inbox.</p>
-      <p>You will pick who can write to you. Notes stay with your account. Until this is built, use the AI desk for a private check-in, or add a friend number on your profile if you want a WhatsApp path.</p>
+    <article class="card people-card">
+      <div>
+        <h2>Messages</h2>
+        <p class="sub">Talk with other people who use My MindRay, right here on the website. Text only. Pick someone to open a chat.</p>
+      </div>
+      <input class="people-search" id="peopleSearch" type="search" placeholder="Search by name or username" autocomplete="off" aria-label="Search people" />
+      <p class="people-label" id="peopleLabel">People</p>
+      <ul class="people-list" id="peopleList"></ul>
+      <p class="people-empty" id="peopleEmpty" hidden></p>
+      <p class="people-safe">Others only see your name, username, and profile picture. Your email, phone numbers, and private notes are never shown.</p>
     </article>
   </section>
   
@@ -181,5 +188,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="dashboard.js"></script>
+  <script src="messages.js"></script>
 </body>
 </html>
