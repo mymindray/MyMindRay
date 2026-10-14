@@ -159,31 +159,21 @@
   <div class="sheet" id="userSheet" hidden>
     <form class="sheet-card" id="userForm">
       <h3>Set up your profile</h3>
-      <p>Your username is how we greet you — it must be unused. Your address sets the country code on your numbers. The phone numbers help you, or someone close to you, get reached if it's ever needed. Use a different number in each field.</p>
+      <p>Your username is how we greet you — it must be unused.</p>
       <input id="usernameInput" maxlength="20" autocomplete="username" placeholder="Username" />
       <p class="err" id="usernameErr"></p>
-      <div class="addr-row">
-        <select id="addrCountrySelect" aria-label="Country"></select>
-        <select id="addrStateSelect" aria-label="State"></select>
-      </div>
-      <p class="err" id="addrErr"></p>
-      <div class="tel-row">
-        <span class="dial-chip" id="dialPersonal">+91</span>
-        <input id="personalPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Your phone number" />
-      </div>
-      <p class="err" id="personalPhoneErr"></p>
-      <div class="tel-row">
-        <span class="dial-chip" id="dialFamily">+91</span>
-        <input id="familyPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Family member's phone number" />
-      </div>
-      <p class="err" id="familyPhoneErr"></p>
-      <div class="tel-row">
-        <span class="dial-chip" id="dialFriend">+91</span>
-        <input id="friendPhoneInput" type="tel" inputmode="tel" maxlength="17" autocomplete="tel" placeholder="Friend's or warden's phone number (optional)" />
-      </div>
-      <p class="err" id="friendPhoneErr"></p>
+      <p class="err" id="saveErr"></p>
       <button type="submit" class="btn-main">Save & continue</button>
     </form>
+  </div>
+
+  <div class="sheet" id="addrSheet" hidden>
+    <div class="sheet-card" role="dialog" aria-labelledby="addrSheetTitle">
+      <h3 id="addrSheetTitle">One more thing</h3>
+      <p>Add your address in your <a href="profile.html" class="sheet-link" id="addrSheetLink">profile</a> to show nearby doctors.</p>
+      <a href="profile.html" class="btn-main sheet-btn" id="addrSheetBtn">Go to profile</a>
+      <button type="button" class="sheet-later" id="addrSheetClose">Maybe later</button>
+    </div>
   </div>
 
   <div class="modal" id="urgentModal" hidden>
