@@ -56,3 +56,39 @@ $$;
 grant execute on function public.username_taken(text) to anon, authenticated;
 grant select, insert, update on public.profiles to authenticated;
 grant select, insert, update on public.user_state to authenticated;
+
+-- ============================================================
+-- LEADERBOARD (run this block once in Supabase → SQL Editor)
+-- Stores ONLY the public score info (name, avatar, score, streak).
+-- Private data (moods, journal, check-ins) stays in user_state.
+-- ============================================================
+create table if not exists public.leaderboard (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  username text not null default 'Member',
+  avatar text default 'Luna',
+  score integer not null default 0 check (score >= 0),
+  streak integer not null default 0 check (streak >= 0),
+  updated_at timestamptz default now()
+);
+
+create index if not exists leaderboard_score_idx on public.leaderboard (score desc, updated_at asc);
+
+alter table public.leaderboard enable row level security;
+
+-- every logged-in user can read the board
+drop policy if exists "leaderboard read all" on public.leaderboard;
+create policy "leaderboard read all" on public.leaderboard for select to authenticated using (true);
+-- users can only write their own row
+drop policy if exists "leaderboard insert own" on public.leaderboard;
+create policy "leaderboard insert own" on public.leaderboard for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "leaderboard update own" on public.leaderboard;
+create policy "leaderboard update own" on public.leaderboard for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+grant select, insert, update on public.leaderboard to authenticated;
+
+-- turn on realtime so the board updates live
+do $$
+begin
+  alter publication supabase_realtime add table public.leaderboard;
+exception when duplicate_object then null;
+end $$;
